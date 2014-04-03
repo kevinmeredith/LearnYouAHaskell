@@ -1,0 +1,6 @@
+Prelude> let isUpperCase x = if (x >= 'A' && x <= 'Z') then True else False
+Prelude> let keepIfPredicate p x e = if(p) then x else e
+Prelude>
+Prelude> let removeAllButUpperCase xs = [a | a <- xs, isUpperCase a]
+Prelude> removeAllButUpperCase "hiHELLO worldWORLD"
+"HELLOWORLD"
