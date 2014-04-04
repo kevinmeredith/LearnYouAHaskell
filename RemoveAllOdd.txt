@@ -1,0 +1,5 @@
+Prelude> let removeAllOddNumbers xs = [x | x <- xs, x `mod` 2 == 0]
+Prelude>
+Prelude> let listOfLists = [ [1,2], [3], [4,3,2] ]
+Prelude> map removeAllOddNumbers listOfLists
+[[2],[],[4,2]]
