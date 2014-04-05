@@ -1,5 +1,12 @@
 -- implement fold in haskell.
 
-myFold :: [a] -> (a -> [b]) -> [b] -> [b]
-myFold [] f acc = acc
-myFold (x:xs) f acc = myFold xs f (acc ++ f x)
+go :: [a] -> (a -> [b]) -> [b] -> [b]
+go [] f acc = acc
+go (x:xs) f acc = go xs f (acc ++ f x)
+
+myFold :: [a] -> (a -> [b]) -> [b]
+myFold as f = go as f []
+
+
+ 
+
