@@ -1,6 +1,3 @@
--- BROKEN since it only includes 1 head, i.e. 
--- [1,2,3,1,1] will show up as [1,2,3], excluding the other 2 1's
-
 split' :: (Ord a) => [a] -> a -> Ordering -> [a]
 split' [] _ _ = []
 split' (x:xs) a LT
@@ -14,19 +11,18 @@ split' (x:xs) a GT
 quicksort :: (Ord a) => [a] => [a]
 quicksort [] = []
 quicksort (x:xs) 
-   | isSorted' rs rs (head rs) = rs
+   | isSortedd rs = rs
    | otherwise = quicksort left ++ [x] ++ quicksort right
      where left = split' xs x LT
            right = split' xs x GT
-           rs = left ++ [x] ++ right
+           headCount = count' (x:xs) x
+           rs = left ++ (replicate headCount x) ++ right
 
--- caller should not have to provide list twice
-isSorted' :: (Ord a) => [a] -> [a] -> a -> Bool
-isSorted' [] [] _ = True
-isSorted' (x:xs) [] _ = isSorted' xs xs (head xs)
-isSorted' orig (x:xs) a
-  | a > x     = False             -- includes a needless check on comparing to head
-  | otherwise = isSorted' orig xs a
+count' :: (Eq a) => [a] -> a -> Int
+count' [] _ = 0
+count' (x:xs) y 
+  | x == y = 1 + count' xs y
+  | otherwise = count' xs y
 
 -- for the [a], does an item exists that satisfies the predicate?
 find' :: [a] -> (a -> Bool) -> Bool
