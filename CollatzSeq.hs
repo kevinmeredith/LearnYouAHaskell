@@ -4,21 +4,24 @@
 odd' :: (Integral a) => a -> Bool
 odd' x = x `mod` 2 == 1
 
+even' :: (Integral a) => a -> Bool
+even' x = x `mod` 2 == 0
+
+-- updating to end at 1 & use even'
 collatz :: (Integral a) => a -> [a]
+collatz 1 = [1]
 collatz x 
- | odd' x    = f x : collatz (f x)
- | otherwise = g x : collatz (g x)
+ | odd' x  = x : collatz (f x)
+ | even' x = x : collatz (g x)
      where f y = y*3 + 1
            g y = y `div` 2   -- per http://stackoverflow.com/a/23050795/409976
 
 -- for all starting numbers between 1 and 100, how many chains 
 -- have a length greater than 15? 
 
-collatzChainLength :: (Integral a) => a -> Int
-collatzChainLength x = length (takeWhile (/= 1) (collatz x) )
+-- let cs = map collatz [1..100]
+-- let ls = map length cs
+-- let gt15 = map (> 15) ls
+-- let convertBool x = if x then 1 else 0
+-- sum (map convertBool gt15)
 
---*Main> let xs = map collatzChainLength [1..100]
---*Main> let ys = map (> 15) xs
---*Main> let convertBool x = if x then 1 else 0
---*Main> sum (map convertBool ys)
---60
