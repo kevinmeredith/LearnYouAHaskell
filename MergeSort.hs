@@ -22,3 +22,7 @@ sort' (x:xs) = m : sort' rest
 filterOne' :: (a -> Bool) -> [a] -> [a]
 filterOne' _ []     = []
 filterOne' f (x:xs) = if not $ f x then xs else x : filterOne' f xs
+
+--group' :: (Ord a) => [a] -> [[a]]
+--group' []     = []
+--group' (x:xs) = takeWhile (== x) (mergesort' x:xs) :: group' $ dropWhile (== x) (xs)
