@@ -1,28 +1,41 @@
 -- re-work
 mergesort' :: (Ord a) => [a] -> [a]
 mergesort' []     = []
-mergesort' xs = merge' (sort' fst', sort' snd')
-   where fst' = take half xs
-         snd' = drop half xs
-         half = len `div` 2 
-         len = length xs
+mergesort' xs@[x] = xs 
+mergesort' xs     = merge' (mergesort' f) (mergesort' s)
+   where (f, s)   = splitAt half xs
+         half     = length xs `div` 2
 
-merge' :: (Ord a) => ([a], [a]) -> [a]
-merge' ([], [])      = []
-merge' ([], ys)      = ys
-merge' (xs, [])      = xs 
-merge' (x:xs, y:ys) = if x < y then x : merge' (xs, y:ys) else y : merge'(x:xs, ys)
+merge' :: (Ord a) => [a] -> [a] -> [a]
+merge' [] []                 = []
+merge' [] ys                 = ys 
+merge' xs []                 = xs 
+merge' xxs@(x:xs) yys@(y:ys) = if x <= y then x : merge' xs yys else y : merge' xxs ys
 
-sort' :: (Ord a) => [a] -> [a]
-sort' []     = []
-sort' (x:xs) = m : sort' rest
-  where m = foldl (\acc x -> if x < acc then x else acc) x xs
-        rest = filterOne' (/= m) (x:xs)
 
-filterOne' :: (a -> Bool) -> [a] -> [a]
-filterOne' _ []     = []
-filterOne' f (x:xs) = if not $ f x then xs else x : filterOne' f xs
 
---group' :: (Ord a) => [a] -> [[a]]
---group' []     = []
---group' (x:xs) = takeWhile (== x) (mergesort' x:xs) :: group' $ dropWhile (== x) (xs)
+-- [1,2,3,4] 
+-- m (ms [1,2] ms [3,4]) 
+-- m (ms[1]    ms[2]) 
+-- m (ms[3]   ms[4])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- bad. look at GroupImproved
+group' :: (Ord a) => [a] -> [[a]]
+group' [] = []
+group' xs = takeWhile (== head' xs) (sorted xs) : (group' $ dropWhile (== head' xs) (sorted xs))
+                    where sorted ys   = mergesort' (ys)
+                          head' (x:_) = x
