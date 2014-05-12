@@ -1,7 +1,7 @@
-elemIndex' :: (a -> Bool) -> [a] -> Maybe Int
+elemIndex' :: (Eq a) => a -> [a] -> Maybe Int
 elemIndex' _ []     = Nothing
-elemIndex' f xs = elemIndex'' f xs 0 
+elemIndex' y xs = elemIndex'' y xs 0 
                   where elemIndex'' _ [] _ = Nothing
-                        elemIndex'' f (x:xs) i
-                          | f x       = Just i
-                          | otherwise = elemIndex'' f xs (i+1)
+                        elemIndex'' z (x:xs) i
+                          | x == z    = Just i
+                          | otherwise = elemIndex'' z xs (i+1)
