@@ -7,8 +7,9 @@ findKeyMaybe' k xs
   | otherwise          = Just $ snd $ head $ findAttempt
   where findAttempt = filter ((== k) . fst) xs
 
+-- updated foldr's lambda per LYAH
 findKeyFold :: (Eq k) => k -> [(k,v)] -> Maybe v
-findKeyFold k = foldr (\x acc -> if (fst x == k) then Just $ snd x else acc) Nothing
+findKeyFold x = foldr (\(k, v) acc -> if (k == x) then Just v else acc) Nothing
 
 --phoneBook =   
 --    [("betty","555-2938")  
