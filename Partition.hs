@@ -1,8 +1,9 @@
 partition' :: (a -> Bool) -> [a] -> ([a], [a])
 partition' f [] = ([], [])
-partition  f (x:xs)
+partition'  f (x:xs)
    | f x       = (x:as, bs)
    | otherwise = (as  , x:bs)
+   where (as, bs) = partition' f xs
 
 -- ghci> partition (`elem` ['A'..'Z']) "BOBsidneyMORGANeddy"  
 -- ("BOBMORGAN","sidneyeddy")  
