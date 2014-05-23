@@ -1,0 +1,14 @@
+(1,2,3,4).foldRight (+_+) 0
+
+        (1, (2, (3, (4, 0) ) ) )
+
+foldleft
+
+f(4, f(3, f(2, f(1, 0) ) ) )
+
+
+*Main Map> let ys = [1,2,3,4,5]
+*Main Map> foldl (\acc x -> x : acc) [] ys
+[5,4,3,2,1]
+*Main Map> foldr (\x acc -> x : acc) [] ys
+[1,2,3,4,5]
