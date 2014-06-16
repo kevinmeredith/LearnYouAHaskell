@@ -1,7 +1,5 @@
--- LYAH 10-length lines only
-main = do  
-    contents <- getContents  
-    putStr (shortLinesOnly contents)  
+-- LYAH using `interact`
+main = interact shortLinesOnly
   
 shortLinesOnly :: String -> String  
 shortLinesOnly input =   
