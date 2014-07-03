@@ -1,4 +1,4 @@
---Reverse Polish Notation
+--Reverse Polish Notation first approach
 --solveRPN :: (Num a) => String -> a
 solveRPN :: String -> Double
 solveRPN xs = head $ foldl (\acc x -> foldingFunction acc x) [] $ words xs
