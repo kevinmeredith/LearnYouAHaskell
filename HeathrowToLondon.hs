@@ -57,16 +57,36 @@ test2 = result -- should be "bd" due to greedy nature
 
 -- simplified Heathrow to London:
 
--- But ... using L/R doesn't appear to work for such a scenario:
+-- But ... using L/R doesn't appear to work for such a scenario. In other words
+-- I'm not sure how to populate the below tree with a foldr
 
 -- A 50 --- | -- 5  
 --         30       
 -- B 10 --- | -- 90 
 
--- tree form:
+-- find greedy, shorest-path for A and B, and then pick lowest
 
---                 _
---              /     \ 
---             50      10
---            /  \     /  \ 
---           30   5   30   90
+-- entering tree manually
+
+shortestPath2 :: Tree (Int, Char) -> (Int, [Char])
+shortestPath2 EmptyTree = (0, [])
+shortestPath2 (Node (c, pt) EmptyTree EmptyTree) = (c + fst (shortestPath2 EmptyTree), pt : snd (shortestPath2 EmptyTree))
+shortestPath2 (Node (c, pt) EmptyTree right)     = (c + fst (shortestPath2 right), pt : snd (shortestPath2 right))
+shortestPath2 (Node (c, pt) left EmptyTree)      = (c + fst (shortestPath2 left), pt : snd (shortestPath2 left))
+shortestPath2 (Node (c, pt) left@(Node (lcost, _) _ _) right@(Node (rcost, _) _ _)) = 
+                                 (c + fst (shortestPath2 next), pt : snd (shortestPath2 next))
+                                       where next = if lcost < rcost then left else right
+                                             
+
+test3 :: (Int, String)
+test3 = result 
+        where path1 = (Node (50, 'A') (Node (30, 'C') (Node (90, 'D') (Node (0, 'E') EmptyTree EmptyTree) EmptyTree) EmptyTree)
+                                     (Node (5, 'C') (Node (0, 'E') EmptyTree EmptyTree) EmptyTree)) 
+              
+              path2 = (Node (10, 'B') (Node (30, 'D') (Node (5, 'C') (Node (0, 'E') EmptyTree EmptyTree) EmptyTree) EmptyTree)
+                                      (Node (90, 'D') (Node (0, 'F') EmptyTree EmptyTree) EmptyTree))
+
+              sp1 = shortestPath2 path1
+              sp2 = shortestPath2 path2
+              compare first@(cost1, _) second@(cost2, _) = if cost1 < cost2 then first else second
+              result = compare sp1 sp2
