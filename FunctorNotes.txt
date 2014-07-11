@@ -17,3 +17,12 @@ instance Functor Tree where
 instance Functor (Either a) where
 	fmap f (Right x) = Right (f x)
 	fmap f (Left x) = Left x
+
+instance Functor ((->) r) where
+   fmap f g = (\x -> f (g x))
+
+instance Functor (r ->) where
+  fmap f g = (\x -> f (g x))   	
+
+instance Functor ((->) r) where
+  fmap = (.)
