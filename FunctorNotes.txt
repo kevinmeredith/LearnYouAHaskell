@@ -26,3 +26,12 @@ instance Functor (r ->) where
 
 instance Functor ((->) r) where
   fmap = (.)
+
+instance Functor Maybe where
+  fmap f (Just x) = Just (f x)
+  fmap f Nothing = Nothing
+
+Functor Laws:
+
+1. fmap id = id
+2. fmap (f . g) F = fmap f (fmap g F)  
