@@ -14,3 +14,9 @@
  instance Applicative [] where 
  	pure x = [x]
  	fs <*> xs = [f x | f <- fs, x <- xs]
+
+--Prelude Control.Applicative> (<*>) (Just (*5)) (Just 2)
+--Just 10
+
+--Prelude Control.Applicative> fmap (++) (Just "foo") <*> Just "bar"
+--Just "foobar"
