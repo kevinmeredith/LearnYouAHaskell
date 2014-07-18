@@ -24,9 +24,6 @@
  instance Applicative IO where
 	pure = return
 	a <*> b = do
-		f <- a -- IO (a -> b)
-		x <- b -- IO a 
-		case f of IO g -> return g x 
-
-
-		-- need IO b by calling the (a -> b) in a
+		f <- a -- f is a -> b
+		x <- b -- x is a 
+		return $ f x -- got help from StackOverflow http://stackoverflow.com/q/24803557/409976
