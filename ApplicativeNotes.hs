@@ -21,13 +21,14 @@
 --Prelude Control.Applicative> fmap (++) (Just "foo") <*> Just "bar"
 --Just "foobar"
 
- instance Applicative IO where
-	pure = return
-	a <*> b = do
-		f <- a -- f is a -> b
-		x <- b -- x is a 
-		return $ f x -- got help from StackOverflow http://stackoverflow.com/q/24803557/409976
+-- got help from StackOverflow http://stackoverflow.com/q/24803557/409976
+ instance Applicative IO where  
+    pure = return  
+    a <*> b = do  
+        f <- a  
+        x <- b  
+        return (f x) 
 
-instance Applicative ((->) r) where
-   pure x = (\_ -> x)
-   f <*> g = \x -> f x (g x)		
+ instance Applicative ((->) r) where  
+    pure x = (\_ -> x)  
+    f <*> g = \x -> f x (g x)  
