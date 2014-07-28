@@ -31,3 +31,14 @@ sequenceAFold' = foldr (\x acc -> (:) <$> x <*> acc) $ pure []
 --LYAH
 sequenceAFoldLYAH' :: (Applicative f) => [f a] -> f [a]
 sequenceAFoldLYAH' = foldr (liftA2 (:)) $ pure []
+
+-- Using `sequenceA` on list of functions
+--*Main Control.Applicative> sequenceA [(+3), (*2)] $ 3
+--[6,6]
+
+-- substitution
+-- (:) <$> (+3) <*> sequenceA [(*2)]
+-- (:) <$> (+3) <*> ((:) <$> (*2) <*> sequenceA [])
+-- (:) <$> (+3) <*> ((:) <$> (*2) <*> pure [])
+-- (:) <$> (+3) <*> [(*2)]
+-- [(+3), (*2)]
