@@ -1,0 +1,7 @@
+-- First functor law
+-- pure f <*> x = fmap f x
+
+Prelude Control.Applicative> fmap (+3) (Just 3)
+Just 6
+Prelude Control.Applicative> pure (+3) <*> (Just 3)
+Just 6
