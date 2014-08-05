@@ -23,6 +23,7 @@ in3Bind start = return start >>= moveKnight >>= moveKnight >>= moveKnight
 arriveIn3 :: KnightPos -> KnightPos -> Bool
 arriveIn3 start end = end `elem` in3 start
 
+-- TODO
 moveKnightWithMove :: KnightPos -> [(KnightPos, KnightPos)]
 moveKnightWithMove (c,r) = do
 	(c',r') <- [(c+2, r-1),(c+2,r+1),(c-2,r-1),(c-2,r+1)

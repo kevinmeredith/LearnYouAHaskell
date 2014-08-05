@@ -42,3 +42,8 @@ guard False = mzero
 (<=<) :: (Monad m) => (b -> m c) -> (a -> m b) -> (a -> mc)
 f <=< g = (\x -> g x >>= f)
 
+newtype Writer w a = Writer { runWriter :: (a, w) }
+
+instance (Monoid w) => Monad (Writer w) where
+  return x = Writer (x, mempty)
+  (Writer (x,v)) >>= f = let (Writer (y, v')) = f x in Writer (y, v `mappend` v')
