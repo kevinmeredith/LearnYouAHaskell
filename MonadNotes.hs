@@ -52,3 +52,17 @@ instance (Monoid w) => Monad (Writer w) where
 instance Monad ((->) r) where
   return x = \_ -> x
   h >>= f = \w -> f (h w) w  
+
+-- State Monad
+--s -> (a, s)
+
+newtype State s a = State { runState :: s -> (a, s)}
+
+instance Monad (State s) where 
+  return x = State $ \x -> (x, s)
+  (State h) >>= f = State $ \s -> let (a, newState) = h s
+                                      (State g) = f a 
+                                  in g newState
+
+
+  -- Monad m => m a -> (a -> m b) -> m b 
