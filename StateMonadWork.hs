@@ -24,3 +24,21 @@ len s i = (length s) == i
 
 lenState :: String -> (Int -> (Bool, Int))
 lenState s = useState (len s) 
+
+chainStates :: (Int -> (result1, Int)) -> (result1 -> (Int -> (result2, Int))) -> (Int -> (result2, Int))
+chainStates prev f d = let (r, d') = prev d
+                       in f r d'
+
+extractState :: Int -> (Int, Int)
+extractState d = (d, d)
+
+chained :: String -> (Int -> (Bool, Int))
+chained str = chainStates extractState     $ \state1 ->
+              let check1 = (len str state1) in
+              chainStates (overwriteState (
+              	if check1
+              		then state1
+              		else state1 * 2))       $ \ _ ->
+              chainStates extractState      $ \state2 -> 
+              let check2 = (len str state2) in
+              convert (check1 || check2)
