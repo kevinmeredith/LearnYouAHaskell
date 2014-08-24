@@ -66,6 +66,11 @@ instance Monad (State s) where
 
 
   -- Monad m => m a -> (a -> m b) -> m b 
+  instance (Error e) => Monad (Either e) where
+    return x = Right x
+    Right x >>= f = f x
+    Left err >>= f = Left err
+    fail msg = Left (strMsg msg)
 
 -- It's worth examining what the type of >>= would be if it were only implemented for State
 (>>=) :: State s a -> (a -> State s b) -> State s b
