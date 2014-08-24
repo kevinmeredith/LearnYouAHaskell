@@ -69,3 +69,31 @@ instance Monad (State s) where
 
 -- It's worth examining what the type of >>= would be if it were only implemented for State
 (>>=) :: State s a -> (a -> State s b) -> State s b
+
+
+liftM :: (Monad m)  => (a -> b) -> m a -> m b
+fmap :: (Functor f) => (a -> b) -> f a -> f b
+
+--implement liftM with >>=
+liftM :: (Monad m)  => (a -> b) -> m a -> m b
+liftM f m = m >>= (\x -> return(f x))
+
+liftM :: (Monad m)  => (a -> b) -> m a -> m b
+liftM f m = do
+  x <- m
+  return (f x)
+
+-- Applicative's <*> can be implemented with Monad
+(<*>) :: (Applicative f) => f (a -> b) -> f a -> f b  
+
+ap :: (Monad m) => m (a -> b) -> m a -> m b  
+ap f m = m >>= (\x -> )
+
+ap :: (Monad m) => m (a -> b) -> m a -> m b  
+ap f m = do
+  g <- f
+  m2 <- m
+  return (g m2)
+
+liftA2 :: (Applicative f) => (a -> b -> c) -> f a -> f b -> f c
+liftA2 f a1 a2 = f <$> a1 <*> a2
