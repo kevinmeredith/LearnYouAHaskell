@@ -31,3 +31,26 @@ stackManipStateMonad = do
 	pushStateMonad 3 
 	a <- popStateMonad
 	popStateMonad
+
+stackStuff :: State Stack ()
+stackStuff = do
+  a <- popStateMonad
+  if a == 5
+     then pushStateMonad 5
+     else do
+       pushStateMonad 3
+       pushStateMonad 8
+
+moreStack :: State Stack ()
+moreStack = do
+  a <- stackManipStateMonad
+  if a == 100
+    then stackStuff
+    else return ()       		
+
+stackyStack :: State Stack ()
+stackyStack = do
+  stackNow <- get
+  if stackNow == [1,2,3]
+     then put [8,3,1]
+     else put [9,2,1]    

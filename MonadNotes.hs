@@ -66,3 +66,6 @@ instance Monad (State s) where
 
 
   -- Monad m => m a -> (a -> m b) -> m b 
+
+-- It's worth examining what the type of >>= would be if it were only implemented for State
+(>>=) :: State s a -> (a -> State s b) -> State s b
