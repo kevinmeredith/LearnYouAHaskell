@@ -74,3 +74,12 @@ instance Monad (State s) where
 
 -- It's worth examining what the type of >>= would be if it were only implemented for State
 (>>=) :: State s a -> (a -> State s b) -> State s b
+
+join :: (Monad m) => m (m a) -> m a
+join = do
+  m <- mm
+  m
+
+-- >>= is always the same as 
+-- join (fmap f m)
+
