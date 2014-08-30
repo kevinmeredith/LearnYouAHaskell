@@ -23,18 +23,6 @@ instance Monad Prob where
 	p >>= f  = join' (fmap f p)    -- matches type, but not conceptually 
 	                               -- correct for this probability example
 
--- return :: Monad m => a -> m a
--- (>>=) :: Monad m  => m a -> (a -> m b) -> m b
-
-foldingFunction :: (a, Rational) -> [(a, Rational)] -> [(a, Rational)]
-foldingFunction x acc = (fst x, (snd x * ))
-
-flatten :: Prob (Prob a) -> Prob a
-flatten mm = mm >>= (\m -> map (rduce) (getProb m))     
-        where rduce = foldr foldingFn [] (snd $ getProb)    --(Prob Char) -> [(Char, Ratio)]
-              foldingFn x acc = (fst x, ((snd x * myRatio) :: Rational)) : acc
-              myRatio = (snd $ ) 
-
 -- motivates how flattening should work
 thisSituation :: Prob (Prob Char)
 thisSituation = Prob
@@ -42,5 +30,25 @@ thisSituation = Prob
   ,( Prob [('c', 1%2),('d',1%2)], 3%4)
   ]
 
--- desired end result:
--- Prob [('a', 1%8), ('b', 1%8), (c,3%8), (d,3%8)]
+-- start: Prob (Prob Char)
+-- end:   Prob Char
+
+--flatten :: Prob (Prob a) -> Prob a
+--flatten (Prob x) = Prob $ convert $ getProb x
+
+-- calling getProb on thisSituation returns: [(Prob Char, Rational)]
+-- then we need to convert to [(Char, Rational)]
+convert :: [(Prob a, Rational)] -> [(a, Rational)]
+convert xs = concat $ map f xs
+
+f :: (Prob a, Rational) -> [(a, Rational)]
+f (p, r) = map (mult r) (getProb p)
+
+mult :: Rational -> (a, Rational) -> (a, Rational)
+mult r (x, y) = (x, r*y)
+
+-- getProb :: Prob a -> [(a, Rational)]
+
+
+-- return :: Monad m => a -> m a
+-- (>>=) :: Monad m  => m a -> (a -> m b) -> m b
