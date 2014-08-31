@@ -33,8 +33,8 @@ thisSituation = Prob
 -- start: Prob (Prob Char)
 -- end:   Prob Char
 
---flatten :: Prob (Prob a) -> Prob a
---flatten (Prob x) = Prob $ convert $ getProb x
+flatten :: Prob (Prob a) -> Prob a
+flatten = Prob . convert . getProb 
 
 -- calling getProb on thisSituation returns: [(Prob Char, Rational)]
 -- then we need to convert to [(Char, Rational)]
