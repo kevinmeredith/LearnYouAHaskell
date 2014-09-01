@@ -1,6 +1,7 @@
 -- LYAH started the exercise, but I implemented the Monad
 
 import Data.Ratio
+import Data.List (all)
 
 newtype Prob a = Prob { getProb :: [(a,Rational)] } deriving Show  
 
@@ -20,8 +21,7 @@ instance Functor Prob where
 
 instance Monad Prob where
 	return x = Prob [(x, 1%1)]
-	p >>= f  = join' (fmap f p)    -- matches type, but not conceptually 
-	                               -- correct for this probability example
+	p >>= f  = flatten (fmap f p)  
 
 -- motivates how flattening should work
 thisSituation :: Prob (Prob Char)
@@ -49,6 +49,31 @@ mult r (x, y) = (x, r*y)
 
 -- getProb :: Prob a -> [(a, Rational)]
 
-
 -- return :: Monad m => a -> m a
 -- (>>=) :: Monad m  => m a -> (a -> m b) -> m b
+
+-- is it a Monad?
+
+-- law 1 says (return x) >>= f is equivalent to f x
+{-
+ghci> (return 5 :: Prob Int) >>= (\x -> Prob [(x+100, 1%1)])
+Prob {getProb = [(105,1 % 1)]}
+ghci>  (\x -> Prob [(x+100, 1%1)]) 5
+Prob {getProb = [(105,1 % 1)]}
+-}
+
+data Coin = Heads | Tails deriving (Show, Eq)
+
+coin :: Prob Coin 
+coin = Prob [(Heads, 1%2), (Tails, 1%2)]
+
+loadedCoin :: Prob Coin
+loadedCoin = Prob [(Heads, 1%10), (Tails, 9%10)]
+
+
+flipThree :: Prob Bool
+flipThree = do
+  a <- coin
+  b <- coin
+  c <- loadedCoin
+  return (all (== Tails) [a,b,c])
