@@ -47,10 +47,32 @@ elemAt []     (Node x _ _) = x
 elemAt (R:ds) (Node _ _ r) = elemAt ds r
 elemAt (L:ds) (Node _ l _) = elemAt ds l
 
--- re-writing to be safe
-maybeElemAt :: Directions -> Tree a -> Maybe a  
-maybeElemAt []     (Node x _ _)     = Just x
-maybeElemAt (R:ds) (Node _ _ Empty) = Nothing
-maybeElemAt (R:ds) (Node _ _ r)     = maybeElemAt ds r
-maybeElemAt (L:ds) (Node _ Empty _) = Nothing
-maybeElemAt (L:ds) (Node _ l _)     = maybeElemAt ds l
+-- I re-wrote to use Maybe, but it wasn't an exhaustive match. See below CodeReview answer
+-- for a truly safe implementation
+unsafeMaybeElemAt :: Directions -> Tree a -> Maybe a  
+unsafeMaybeElemAt []     (Node x _ _)     = Just x
+unsafeMaybeElemAt (R:ds) (Node _ _ Empty) = Nothing
+unsafeMaybeElemAt (R:ds) (Node _ _ r)     = unsafeMaybeElemAt ds r
+unsafeMaybeElemAt (L:ds) (Node _ Empty _) = Nothing
+unsafeMaybeElemAt (L:ds) (Node _ l _)     = unsafeMaybeElemAt ds l
+
+--http://codereview.stackexchange.com/questions/61992/find-element-in-tree-given-a-list-of-directions/62000#62000
+safeElementAt :: Directions -> Tree a -> Maybe a
+safeElementAt []    (Node x _ _)  = Just x
+safeElementAt (R:ds) (Node _ _ r) = safeElementAt ds r
+safeElementAt (L:ds) (Node _ l _) = safeElementAt ds l
+safeElementAt _ Empty             = Nothing
+
+type Breadcrumbs = [Direction]
+
+-- returns (left sub-tree, L appended to Breadcrumbs argument)
+goLeft :: (Tree a, Breadcrumbs) -> (Tree a, Breadcrumbs)
+goLeft (Node _ l _, bs) = (l, L:bs)
+
+-- same as above, but to the right
+goRight :: (Tree a, Breadcrumbs) -> (Tree a, Breadcrumbs)
+goRight (Node _ _ r, bs) = (r, R:bs)
+
+myTree :: Tree Char
+myTree = Node 'a' (Node 'b' (Node 'd' Empty Empty) (Node 'e' Empty Empty)) 
+                  (Node 'c' (Node 'f' Empty Empty) (Node 'g' Empty Empty))
