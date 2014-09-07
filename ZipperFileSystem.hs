@@ -48,7 +48,47 @@ mkSimpleDisk =
 
 --Here's a function that, given a name, focuses on a file or folder that's located in the current focused folder:
  
-fsTo :: Name -> FSZipper -> FSZipper  
-fsTo name (Folder foldername (f@(File filename _ ) :is)), FSCrumb name ls rs) 
-  | name == filename = (f, FSCrumb folderName ls (is ++ rs) )
-  | otherwise        = 
+--fsTo :: Name -> FSZipper -> FSZipper  
+--fsTo name (Folder foldername (f@(File filename _ ) :is)), FSCrumb name ls rs) 
+--  | name == filename = (f, FSCrumb folderName ls (is ++) ) 
+--  | otherwise        = 
+
+-- not safe!
+fsTo :: Name -> FSZipper -> FSZipper
+fsTo name (Folder folderName items, bs) =
+	let (ls, item:rs) = break (nameIs name) items
+	in  (item, FSCrumb folderName ls rs:bs)
+
+nameIs :: Name -> FSItem -> Bool
+nameIs name (Folder folderName _) = name == folderName	
+nameIs name (File fileName _)     = name == fileName
+
+--ghci> fsTo "a.txt" x
+--(File "a.txt" "aaa",[FSCrumb "FOO" [] [File "b.txt" "bbb",Folder "BAR" [File "c.txt" "ccc"]]])
+
+fsRename :: Name -> FSZipper -> FSZipper
+fsRename newName (File fileName content, cs) = (File newName content, cs)
+fsRename newName (Folder folderName xs, cs)  = (Folder newName xs, cs)
+
+-- my implementation
+fsMakeNewItem :: FSItem -> FSZipper -> FSZipper
+fsMakeNewItem item (Folder folderName xs, cs)                   = (Folder folderName (item:xs), cs)
+fsMakeNewItem item (File fileName x, (FSCrumb name ls rs) : cs) = (File fileName x, (FSCrumb name ls (item:rs)) : cs)
+
+--testing:
+
+--ghci> let x = (Folder "FOO" [File "a.txt" "aaa",File "b.txt" "bbb",Folder "BAR" [File "c.txt" "ccc"]],[] :: [FSCrumb])
+
+--ghci> :t x
+--x :: (FSItem, [FSCrumb])
+
+--ghci> fsMakeNewItem (Folder "folder!" []) x
+--(Folder "FOO" [Folder "folder!" [],File "a.txt" "aaa",File "b.txt" "bbb",Folder "BAR" [File "c.txt" "ccc"]],[])
+
+--ghci> fsMakeNewItem (File "newwwwwwww" "adsfdsaf") x
+--(Folder "FOO" [File "newwwwwwww" "adsfdsaf",File "a.txt" "aaa",File "b.txt" "bbb",Folder "BAR" [File "c.txt" "ccc"]],[])
+
+-- LYAH version
+fsNewFile :: FSItem -> FSZipper -> FSZipper  
+fsNewFile item (Folder folderName items, bs) =   
+    (Folder folderName (item:items), bs)  
