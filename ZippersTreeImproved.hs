@@ -101,3 +101,34 @@ topMost' (t, LeftCrumb x r : xs) = topMost (Node x t r, xs)
 topMost :: Zipper a -> Zipper a
 topMost (t,[]) = (t,[])
 topMost z      = topMost $ goUp z
+
+goLeftSafe :: Zipper a -> Maybe (Zipper a)
+goLeftSafe (Empty, _)       = Nothing
+goLeftSafe (Node x l r, cs) = Just (l, LeftCrumb x r : cs)
+
+--ghci> goLeftSafe (Node "5" Empty Empty, [])
+--Just (Empty,[LeftCrumb "5" Empty])
+
+--ghci> goLeftSafe (Node "5" Empty Empty, [])  >>= goLeftSafe
+--Nothing
+
+-- note that it's not necessary to handle the Empty case since 
+-- it'll simply get put in the new "Crumb" tree
+goUpSafe :: Zipper a -> Maybe (Zipper a)
+goUpSafe (_, [])                     = Nothing
+goUpSafe (t, (LeftCrumb y r)  : cs)  = Just (Node y t r, cs)
+goUpSafe (t, (RightCrumb y l) : cs)  = Just (Node y l t, cs)
+
+-- testing:
+
+--ghci> zipper2
+--(Node 5 (Node 10 Empty Empty) Empty,[RightCrumb 100 Empty])
+
+--ghci> goUpSafe zipper2
+--Just (Node 100 Empty (Node 5 (Node 10 Empty Empty) Empty),[])
+
+--ghci> goUpSafe zipper2 >>= goUp
+--goUp      goUpLYAH  goUpSafe
+
+--ghci> goUpSafe zipper2 >>= goUpSafe
+--Nothing
